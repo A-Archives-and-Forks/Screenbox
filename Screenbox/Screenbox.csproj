@@ -462,7 +462,6 @@
     <Content Include="Assets\Visualizers\Music Tunnel\styles\style.css" />
     <Content Include="Assets\Visualizers\Music Tunnel\thumbnail.jpg" />
     <None Include="Package.StoreAssociation.xml" />
-    <None Include="packages.lock.json" />
     <None Include="InvalidXamlResources.txt" />
     <Content Include="Properties\Default.rd.xml" />
     <None Include="Secrets.cs.template" />

@@ -339,7 +339,6 @@
     <PRIResource Include="Helpers\LanguageCodes.resw">
       <SubType>Designer</SubType>
     </PRIResource>
-    <None Include="packages.lock.json" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
