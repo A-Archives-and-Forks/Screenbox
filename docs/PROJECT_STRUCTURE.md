@@ -251,10 +251,6 @@ Helper classes provide focused utilities and lightweight wrappers for specific f
 - **`RendererWatcher`**: Lightweight wrapper around VLC's RendererDiscoverer for network renderer discovery, exposing events for renderer found/lost notifications and maintaining a list of available renderers
 - **`DisplayRequestTracker`**: Manages display sleep prevention during media playback
 
-#### UI-Specific Services (Screenbox Project)
-- **`ResourceService.cs`**: Localization and resource string management
-- **`NavigationService.cs`**: Page navigation and routing
-
 ### Media Playback Engine
 
 The media playback system is built on [LibVLCSharp](https://code.videolan.org/videolan/LibVLCSharp) with custom abstractions for integration with the MVVM architecture:
@@ -302,7 +298,6 @@ The following table summarizes the allowed dependency directions between layers:
 
 - All services and coordinators must be registered against their **interface**, not their concrete type.
 - Use constructor injection exclusively. The service locator pattern (`Ioc.Default.GetRequiredService<T>()`) is acceptable only in View code-behind for resolving ViewModels into page `DataContext`. It must not be used inside ViewModels, Services, or Coordinators.
-- When a component needs to create multiple instances of a transient type at runtime, inject `Func<T>` as a factory (registered in `ServiceHelpers.cs`) rather than using the service locator.
 
 ### Stateless vs Stateful
 
