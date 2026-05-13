@@ -6,11 +6,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using Screenbox.Core.Contexts;
-using Screenbox.Core.Controllers;
+using Screenbox.Core.Coordinators;
 using Screenbox.Core.Enums;
 using Screenbox.Core.Helpers;
 using Screenbox.Core.Messages;
@@ -47,23 +46,25 @@ public sealed partial class MainPageViewModel : ObservableRecipient,
     private readonly INavigationService _navigationService;
     private readonly LibraryContext _libraryContext;
     private readonly ILibraryService _libraryService;
-    private readonly LibraryController _libraryController;
+    private readonly ILibraryCoordinator _libraryCoordinator;
     private readonly PlaylistsContext _playlistsContext;
     private readonly IPlaylistService _playlistService;
+    private readonly Func<PlaylistViewModel> _playlistFactory;
 
     public ObservableCollection<SearchSuggestionItem> SearchSuggestions { get; } = new();
 
     public MainPageViewModel(ISearchService searchService, INavigationService navigationService,
-        LibraryContext libraryContext, ILibraryService libraryService, LibraryController libraryController,
-        PlaylistsContext playlistsContext, IPlaylistService playlistService)
+        LibraryContext libraryContext, ILibraryService libraryService, ILibraryCoordinator libraryCoordinator,
+        PlaylistsContext playlistsContext, IPlaylistService playlistService, Func<PlaylistViewModel> playlistFactory)
     {
         _searchService = searchService;
         _navigationService = navigationService;
         _libraryContext = libraryContext;
         _libraryService = libraryService;
-        _libraryController = libraryController;
+        _libraryCoordinator = libraryCoordinator;
         _playlistsContext = playlistsContext;
         _playlistService = playlistService;
+        _playlistFactory = playlistFactory;
         _searchQuery = string.Empty;
         _criticalErrorMessage = string.Empty;
         IsActive = true;
@@ -246,7 +247,7 @@ public sealed partial class MainPageViewModel : ObservableRecipient,
     {
         try
         {
-            await _libraryController.EnsureWatchingAsync();
+            await _libraryCoordinator.EnsureWatchingAsync();
         }
         catch (Exception)
         {
@@ -302,7 +303,7 @@ public sealed partial class MainPageViewModel : ObservableRecipient,
             _playlistsContext.Playlists.Clear();
             foreach (var p in loaded)
             {
-                var playlist = Ioc.Default.GetRequiredService<PlaylistViewModel>();
+                var playlist = _playlistFactory();
                 try
                 {
                     playlist.Load(p);

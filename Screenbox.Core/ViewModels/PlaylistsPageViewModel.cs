@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Screenbox.Core.Contexts;
@@ -21,22 +20,25 @@ public partial class PlaylistsPageViewModel : ObservableRecipient
     private readonly IFilesService _filesService;
     private readonly IPlaylistService _playlistService;
     private readonly PlaylistsContext _playlistsContext;
+    private readonly Func<PlaylistViewModel> _playlistFactory;
 
     public ObservableCollection<PlaylistViewModel> Playlists => _playlistsContext.Playlists;
 
     [ObservableProperty] private PlaylistViewModel? _selectedPlaylist;
 
-    public PlaylistsPageViewModel(IFilesService filesService, IPlaylistService playlistService, PlaylistsContext playlistsContext)
+    public PlaylistsPageViewModel(IFilesService filesService, IPlaylistService playlistService,
+        PlaylistsContext playlistsContext, Func<PlaylistViewModel> playlistFactory)
     {
         _filesService = filesService;
         _playlistService = playlistService;
         _playlistsContext = playlistsContext;
+        _playlistFactory = playlistFactory;
     }
 
     public async Task CreatePlaylistAsync(string displayName)
     {
         // Create view model and add to collection
-        var playlist = Ioc.Default.GetRequiredService<PlaylistViewModel>();
+        var playlist = _playlistFactory();
         playlist.Name = displayName;
         await playlist.SaveAsync();
 
@@ -89,7 +91,7 @@ public partial class PlaylistsPageViewModel : ObservableRecipient
         IReadOnlyList<MediaViewModel> items = await _playlistService.ImportPlaylistItemsAsync(file);
         if (items.Count == 0) return;
 
-        var playlist = Ioc.Default.GetRequiredService<PlaylistViewModel>();
+        var playlist = _playlistFactory();
         playlist.Name = file.DisplayName;
         await playlist.AddItemsAsync(items);
         Playlists.Insert(0, playlist);

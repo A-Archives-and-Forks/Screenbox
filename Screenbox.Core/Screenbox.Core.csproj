@@ -149,7 +149,8 @@
     <Compile Include="Helpers\EnumExtensions.cs" />
     <Compile Include="Helpers\FilesHelpers.cs" />
     <Compile Include="Helpers\LanguageHelper.cs" />
-    <Compile Include="Controllers\LastPositionTracker.cs" />
+    <Compile Include="Services\ILastPositionTracker.cs" />
+    <Compile Include="Services\LastPositionTracker.cs" />
     <Compile Include="Helpers\ListGrouping.cs" />
     <Compile Include="Helpers\MediaGroupingHelpers.cs" />
     <Compile Include="Helpers\MessengerExtensions.cs" />
@@ -247,7 +248,8 @@
     <Compile Include="Services\ISettingsService.cs" />
     <Compile Include="Services\ISystemMediaTransportControlsService.cs" />
     <Compile Include="Services\IWindowService.cs" />
-    <Compile Include="Controllers\LibraryController.cs" />
+    <Compile Include="Coordinators\ILibraryCoordinator.cs" />
+    <Compile Include="Coordinators\LibraryCoordinator.cs" />
     <Compile Include="Services\LibraryService.cs" />
     <Compile Include="Services\LogService.cs" />
     <Compile Include="Factories\MediaListFactory.cs" />

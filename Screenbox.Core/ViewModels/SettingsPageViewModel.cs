@@ -10,7 +10,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.WinUI;
 using Screenbox.Core.Contexts;
-using Screenbox.Core.Controllers;
+using Screenbox.Core.Coordinators;
 using Screenbox.Core.Enums;
 using Screenbox.Core.Helpers;
 using Screenbox.Core.Messages;
@@ -61,11 +61,11 @@ public sealed partial class SettingsPageViewModel : ObservableRecipient
     private readonly ISettingsService _settingsService;
     private readonly LibraryContext _libraryContext;
     private readonly ILibraryService _libraryService;
-    private readonly LibraryController _libraryController;
+    private readonly ILibraryCoordinator _libraryCoordinator;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly DispatcherQueueTimer _storageDeviceRefreshTimer;
     private readonly DeviceWatcher? _portableStorageDeviceWatcher;
-    private readonly LastPositionTracker _lastPositionTracker;
+    private readonly ILastPositionTracker _lastPositionTracker;
     private static InitialValues? _initialValues;
     private StorageLibrary? _videosLibrary;
     private StorageLibrary? _musicLibrary;
@@ -82,13 +82,13 @@ public sealed partial class SettingsPageViewModel : ObservableRecipient
         ISettingsService settingsService,
         LibraryContext libraryContext,
         ILibraryService libraryService,
-        LibraryController libraryController,
-        LastPositionTracker lastPositionTracker)
+        ILibraryCoordinator libraryCoordinator,
+        ILastPositionTracker lastPositionTracker)
     {
         _settingsService = settingsService;
         _libraryContext = libraryContext;
         _libraryService = libraryService;
-        _libraryController = libraryController;
+        _libraryCoordinator = libraryCoordinator;
         _lastPositionTracker = lastPositionTracker;
         _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
         _storageDeviceRefreshTimer = _dispatcherQueue.CreateTimer();
@@ -220,7 +220,7 @@ public sealed partial class SettingsPageViewModel : ObservableRecipient
 
         try
         {
-            _ = _libraryController.RefreshWatchersAsync();
+            _ = _libraryCoordinator.RefreshWatchersAsync();
         }
         catch (Exception)
         {

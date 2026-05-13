@@ -11,12 +11,12 @@ using Windows.Storage;
 using Windows.Storage.Search;
 using Windows.System;
 
-namespace Screenbox.Core.Controllers;
+namespace Screenbox.Core.Coordinators;
 
 /// <summary>
 /// Stateful coordinator that owns library watchers/timers and invokes <see cref="ILibraryService"/> operations.
 /// </summary>
-public sealed class LibraryController : IDisposable
+public sealed class LibraryCoordinator : ILibraryCoordinator
 {
     private readonly LibraryContext _context;
     private readonly ILibraryService _libraryService;
@@ -34,7 +34,7 @@ public sealed class LibraryController : IDisposable
     private bool UseIndexer => _settingsService.UseIndexer;
     private bool SearchRemovableStorage => _settingsService.SearchRemovableStorage && SystemInformation.IsXbox;
 
-    public LibraryController(LibraryContext context, ILibraryService libraryService, ISettingsService settingsService)
+    public LibraryCoordinator(LibraryContext context, ILibraryService libraryService, ISettingsService settingsService)
     {
         _context = context;
         _libraryService = libraryService;
@@ -53,9 +53,7 @@ public sealed class LibraryController : IDisposable
         }
     }
 
-    /// <summary>
-    /// Ensures query watchers are created and attached to the current context.
-    /// </summary>
+    /// <inheritdoc/>
     public async Task EnsureWatchingAsync()
     {
         await EnsureWatchingMusicAsync();
@@ -67,9 +65,7 @@ public sealed class LibraryController : IDisposable
         }
     }
 
-    /// <summary>
-    /// Recreates query watchers if settings (eg indexer usage) changed.
-    /// </summary>
+    /// <inheritdoc/>
     public async Task RefreshWatchersAsync()
     {
         StopWatching();
