@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Screenbox.Core.Contexts;
 using Screenbox.Core.Coordinators;
 using Screenbox.Core.Factories;
@@ -50,7 +49,7 @@ public static class ServiceHelpers
         services.AddTransient<ArtistViewModelFactory>();
         services.AddTransient<AlbumViewModelFactory>();
         services.AddSingleton<IMediaListFactory, MediaListFactory>();
-        services.AddTransient<Func<PlaylistViewModel>>(sp => () => sp.GetRequiredService<PlaylistViewModel>());
+        services.AddSingleton<IPlaylistViewModelFactory, PlaylistViewModelFactory>();
 
         // Contexts
         services.AddSingleton<PlayerContext>();

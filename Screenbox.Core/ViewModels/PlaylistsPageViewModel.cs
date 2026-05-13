@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Screenbox.Core.Contexts;
+using Screenbox.Core.Factories;
 using Screenbox.Core.Helpers;
 using Screenbox.Core.Messages;
 using Screenbox.Core.Services;
@@ -20,14 +21,14 @@ public partial class PlaylistsPageViewModel : ObservableRecipient
     private readonly IFilesService _filesService;
     private readonly IPlaylistService _playlistService;
     private readonly PlaylistsContext _playlistsContext;
-    private readonly Func<PlaylistViewModel> _playlistFactory;
+    private readonly IPlaylistViewModelFactory _playlistFactory;
 
     public ObservableCollection<PlaylistViewModel> Playlists => _playlistsContext.Playlists;
 
     [ObservableProperty] private PlaylistViewModel? _selectedPlaylist;
 
     public PlaylistsPageViewModel(IFilesService filesService, IPlaylistService playlistService,
-        PlaylistsContext playlistsContext, Func<PlaylistViewModel> playlistFactory)
+        PlaylistsContext playlistsContext, IPlaylistViewModelFactory playlistFactory)
     {
         _filesService = filesService;
         _playlistService = playlistService;
@@ -38,7 +39,7 @@ public partial class PlaylistsPageViewModel : ObservableRecipient
     public async Task CreatePlaylistAsync(string displayName)
     {
         // Create view model and add to collection
-        var playlist = _playlistFactory();
+        var playlist = _playlistFactory.Create();
         playlist.Name = displayName;
         await playlist.SaveAsync();
 
@@ -91,7 +92,7 @@ public partial class PlaylistsPageViewModel : ObservableRecipient
         IReadOnlyList<MediaViewModel> items = await _playlistService.ImportPlaylistItemsAsync(file);
         if (items.Count == 0) return;
 
-        var playlist = _playlistFactory();
+        var playlist = _playlistFactory.Create();
         playlist.Name = file.DisplayName;
         await playlist.AddItemsAsync(items);
         Playlists.Insert(0, playlist);

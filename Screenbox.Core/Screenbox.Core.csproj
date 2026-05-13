@@ -239,6 +239,8 @@
     <Compile Include="Services\IFilesService.cs" />
     <Compile Include="Services\ILibraryService.cs" />
     <Compile Include="Factories\IMediaListFactory.cs" />
+    <Compile Include="Factories\IPlaylistViewModelFactory.cs" />
+    <Compile Include="Factories\PlaylistViewModelFactory.cs" />
     <Compile Include="Services\INavigationService.cs" />
     <Compile Include="Services\IPlaybackControlService.cs" />
     <Compile Include="Services\IPlayerService.cs" />

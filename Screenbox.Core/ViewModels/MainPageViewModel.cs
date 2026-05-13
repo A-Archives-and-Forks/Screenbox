@@ -11,6 +11,7 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using Screenbox.Core.Contexts;
 using Screenbox.Core.Coordinators;
 using Screenbox.Core.Enums;
+using Screenbox.Core.Factories;
 using Screenbox.Core.Helpers;
 using Screenbox.Core.Messages;
 using Screenbox.Core.Models;
@@ -49,13 +50,13 @@ public sealed partial class MainPageViewModel : ObservableRecipient,
     private readonly ILibraryCoordinator _libraryCoordinator;
     private readonly PlaylistsContext _playlistsContext;
     private readonly IPlaylistService _playlistService;
-    private readonly Func<PlaylistViewModel> _playlistFactory;
+    private readonly IPlaylistViewModelFactory _playlistFactory;
 
     public ObservableCollection<SearchSuggestionItem> SearchSuggestions { get; } = new();
 
     public MainPageViewModel(ISearchService searchService, INavigationService navigationService,
         LibraryContext libraryContext, ILibraryService libraryService, ILibraryCoordinator libraryCoordinator,
-        PlaylistsContext playlistsContext, IPlaylistService playlistService, Func<PlaylistViewModel> playlistFactory)
+        PlaylistsContext playlistsContext, IPlaylistService playlistService, IPlaylistViewModelFactory playlistFactory)
     {
         _searchService = searchService;
         _navigationService = navigationService;
@@ -303,7 +304,7 @@ public sealed partial class MainPageViewModel : ObservableRecipient,
             _playlistsContext.Playlists.Clear();
             foreach (var p in loaded)
             {
-                var playlist = _playlistFactory();
+                var playlist = _playlistFactory.Create();
                 try
                 {
                     playlist.Load(p);
