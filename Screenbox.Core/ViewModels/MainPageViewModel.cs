@@ -46,7 +46,6 @@ public sealed partial class MainPageViewModel : ObservableRecipient,
     private readonly ISearchService _searchService;
     private readonly INavigationService _navigationService;
     private readonly LibraryContext _libraryContext;
-    private readonly ILibraryService _libraryService;
     private readonly ILibraryCoordinator _libraryCoordinator;
     private readonly PlaylistsContext _playlistsContext;
     private readonly IPlaylistService _playlistService;
@@ -55,13 +54,12 @@ public sealed partial class MainPageViewModel : ObservableRecipient,
     public ObservableCollection<SearchSuggestionItem> SearchSuggestions { get; } = new();
 
     public MainPageViewModel(ISearchService searchService, INavigationService navigationService,
-        LibraryContext libraryContext, ILibraryService libraryService, ILibraryCoordinator libraryCoordinator,
+        LibraryContext libraryContext, ILibraryCoordinator libraryCoordinator,
         PlaylistsContext playlistsContext, IPlaylistService playlistService, IPlaylistViewModelFactory playlistFactory)
     {
         _searchService = searchService;
         _navigationService = navigationService;
         _libraryContext = libraryContext;
-        _libraryService = libraryService;
         _libraryCoordinator = libraryCoordinator;
         _playlistsContext = playlistsContext;
         _playlistService = playlistService;
@@ -263,7 +261,7 @@ public sealed partial class MainPageViewModel : ObservableRecipient,
     {
         try
         {
-            await _libraryService.FetchMusicAsync(_libraryContext);
+            await _libraryCoordinator.FetchMusicAsync();
         }
         catch (UnauthorizedAccessException)
         {
@@ -280,7 +278,7 @@ public sealed partial class MainPageViewModel : ObservableRecipient,
     {
         try
         {
-            await _libraryService.FetchVideosAsync(_libraryContext);
+            await _libraryCoordinator.FetchVideosAsync();
         }
         catch (UnauthorizedAccessException)
         {

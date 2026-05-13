@@ -60,7 +60,6 @@ public sealed partial class SettingsPageViewModel : ObservableRecipient
 
     private readonly ISettingsService _settingsService;
     private readonly LibraryContext _libraryContext;
-    private readonly ILibraryService _libraryService;
     private readonly ILibraryCoordinator _libraryCoordinator;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly DispatcherQueueTimer _storageDeviceRefreshTimer;
@@ -81,13 +80,11 @@ public sealed partial class SettingsPageViewModel : ObservableRecipient
     public SettingsPageViewModel(
         ISettingsService settingsService,
         LibraryContext libraryContext,
-        ILibraryService libraryService,
         ILibraryCoordinator libraryCoordinator,
         ILastPositionTracker lastPositionTracker)
     {
         _settingsService = settingsService;
         _libraryContext = libraryContext;
-        _libraryService = libraryService;
         _libraryCoordinator = libraryCoordinator;
         _lastPositionTracker = lastPositionTracker;
         _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
@@ -387,18 +384,6 @@ public sealed partial class SettingsPageViewModel : ObservableRecipient
     {
         if (_videosLibrary == null)
         {
-            if (_libraryContext.VideosLibrary == null)
-            {
-                try
-                {
-                    _libraryContext.VideosLibrary = await _libraryService.InitializeVideosLibraryAsync();
-                }
-                catch (Exception)
-                {
-                    // pass
-                }
-            }
-
             _videosLibrary = _libraryContext.VideosLibrary;
             if (_videosLibrary != null)
             {
@@ -408,18 +393,6 @@ public sealed partial class SettingsPageViewModel : ObservableRecipient
 
         if (_musicLibrary == null)
         {
-            if (_libraryContext.MusicLibrary == null)
-            {
-                try
-                {
-                    _libraryContext.MusicLibrary = await _libraryService.InitializeMusicLibraryAsync();
-                }
-                catch (Exception)
-                {
-                    // pass
-                }
-            }
-
             _musicLibrary = _libraryContext.MusicLibrary;
             if (_musicLibrary != null)
             {
@@ -484,7 +457,7 @@ public sealed partial class SettingsPageViewModel : ObservableRecipient
     {
         try
         {
-            await _libraryService.FetchMusicAsync(_libraryContext, false);
+            await _libraryCoordinator.FetchMusicAsync(false);
         }
         catch (UnauthorizedAccessException)
         {
@@ -501,7 +474,7 @@ public sealed partial class SettingsPageViewModel : ObservableRecipient
     {
         try
         {
-            await _libraryService.FetchVideosAsync(_libraryContext, false);
+            await _libraryCoordinator.FetchVideosAsync(false);
         }
         catch (UnauthorizedAccessException)
         {

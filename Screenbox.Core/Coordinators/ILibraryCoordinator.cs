@@ -21,4 +21,14 @@ public interface ILibraryCoordinator : IDisposable
     /// Recreates query watchers. Call when settings that affect queries (e.g. indexer usage) change.
     /// </summary>
     Task RefreshWatchersAsync();
+
+    /// <summary>
+    /// Fetches the music library and applies the result to <see cref="Contexts.LibraryContext"/>.
+    /// </summary>
+    Task FetchMusicAsync(bool useCache = true);
+
+    /// <summary>
+    /// Fetches the videos library and applies the result to <see cref="Contexts.LibraryContext"/>.
+    /// </summary>
+    Task FetchVideosAsync(bool useCache = true);
 }
