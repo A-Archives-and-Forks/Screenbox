@@ -256,6 +256,7 @@
     <Compile Include="Extensions\SplitButtonExtensions.cs" />
     <Compile Include="Helpers\DeviceInfoHelper.cs" />
     <Compile Include="Helpers\GlobalizationHelper.cs" />
+    <Compile Include="Helpers\ItemLabelHelper.cs" />
     <Compile Include="Helpers\KeyboardAcceleratorHelper.cs" />
     <Compile Include="Pages\AlbumDetailsPage.xaml.cs">
       <DependentUpon>AlbumDetailsPage.xaml</DependentUpon>
