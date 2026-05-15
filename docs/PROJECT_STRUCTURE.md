@@ -98,7 +98,7 @@ Screenbox implements numerous custom controls for specialized functionality:
 
 ### Data Binding
 
-Screenbox uses [data binding](https://learn.microsoft.com/en-us/windows/uwp/data-binding/data-binding-quickstart) extensively to create dynamic, responsive UI components. The application primarily uses the [x:Bind](https://learn.microsoft.com/en-us/xaml-platform/x-bind-markup-extension) markup extension for performance benefits over the legacy [Binding](https://learn.microsoft.com/en-us/xaml-platform/binding-markup-extension) syntax.
+Screenbox uses [data binding](https://learn.microsoft.com/en-us/windows/uwp/data-binding/data-binding-quickstart) extensively to create dynamic, responsive UI components. The application primarily uses the [x:Bind](https://learn.microsoft.com/en-us/windows/apps/develop/platform/xaml/x-bind-markup-extension) markup extension for performance benefits over the legacy [Binding](https://learn.microsoft.com/en-us/windows/apps/develop/platform/xaml/binding-markup-extension) syntax.
 
 Example of x:Bind usage in media display:
 ```xml
