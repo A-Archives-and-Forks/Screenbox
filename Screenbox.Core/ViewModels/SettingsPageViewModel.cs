@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.WinUI;
 using Screenbox.Core.Contexts;
-using Screenbox.Core.Controllers;
+using Screenbox.Core.Coordinators;
 using Screenbox.Core.Enums;
 using Screenbox.Core.Helpers;
 using Screenbox.Core.Messages;
@@ -67,12 +67,11 @@ public sealed partial class SettingsPageViewModel : ObservableRecipient
 
     private readonly ISettingsService _settingsService;
     private readonly LibraryContext _libraryContext;
-    private readonly ILibraryService _libraryService;
-    private readonly LibraryController _libraryController;
+    private readonly ILibraryCoordinator _libraryCoordinator;
     private readonly DispatcherQueue _dispatcherQueue;
     private readonly DispatcherQueueTimer _storageDeviceRefreshTimer;
     private readonly DeviceWatcher? _portableStorageDeviceWatcher;
-    private readonly LastPositionTracker _lastPositionTracker;
+    private readonly ILastPositionTracker _lastPositionTracker;
     private static InitialValues? _initialValues;
     private StorageLibrary? _videosLibrary;
     private StorageLibrary? _musicLibrary;
@@ -88,14 +87,12 @@ public sealed partial class SettingsPageViewModel : ObservableRecipient
     public SettingsPageViewModel(
         ISettingsService settingsService,
         LibraryContext libraryContext,
-        ILibraryService libraryService,
-        LibraryController libraryController,
-        LastPositionTracker lastPositionTracker)
+        ILibraryCoordinator libraryCoordinator,
+        ILastPositionTracker lastPositionTracker)
     {
         _settingsService = settingsService;
         _libraryContext = libraryContext;
-        _libraryService = libraryService;
-        _libraryController = libraryController;
+        _libraryCoordinator = libraryCoordinator;
         _lastPositionTracker = lastPositionTracker;
         _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
         _storageDeviceRefreshTimer = _dispatcherQueue.CreateTimer();
@@ -264,7 +261,7 @@ public sealed partial class SettingsPageViewModel : ObservableRecipient
 
         try
         {
-            _ = _libraryController.RefreshWatchersAsync();
+            _ = _libraryCoordinator.RefreshWatchersAsync();
         }
         catch (Exception)
         {
@@ -431,19 +428,7 @@ public sealed partial class SettingsPageViewModel : ObservableRecipient
     {
         if (_videosLibrary == null)
         {
-            if (_libraryContext.VideosLibrary == null)
-            {
-                try
-                {
-                    _libraryContext.VideosLibrary = await _libraryService.InitializeVideosLibraryAsync();
-                }
-                catch (Exception)
-                {
-                    // pass
-                }
-            }
-
-            _videosLibrary = _libraryContext.VideosLibrary;
+            _videosLibrary = _libraryContext.VideosStorageLibrary;
             if (_videosLibrary != null)
             {
                 _videosLibrary.DefinitionChanged += LibraryOnDefinitionChanged;
@@ -452,19 +437,7 @@ public sealed partial class SettingsPageViewModel : ObservableRecipient
 
         if (_musicLibrary == null)
         {
-            if (_libraryContext.MusicLibrary == null)
-            {
-                try
-                {
-                    _libraryContext.MusicLibrary = await _libraryService.InitializeMusicLibraryAsync();
-                }
-                catch (Exception)
-                {
-                    // pass
-                }
-            }
-
-            _musicLibrary = _libraryContext.MusicLibrary;
+            _musicLibrary = _libraryContext.MusicStorageLibrary;
             if (_musicLibrary != null)
             {
                 _musicLibrary.DefinitionChanged += LibraryOnDefinitionChanged;
@@ -528,7 +501,7 @@ public sealed partial class SettingsPageViewModel : ObservableRecipient
     {
         try
         {
-            await _libraryService.FetchMusicAsync(_libraryContext, false);
+            await _libraryCoordinator.FetchMusicAsync(false);
         }
         catch (UnauthorizedAccessException)
         {
@@ -545,7 +518,7 @@ public sealed partial class SettingsPageViewModel : ObservableRecipient
     {
         try
         {
-            await _libraryService.FetchVideosAsync(_libraryContext, false);
+            await _libraryCoordinator.FetchVideosAsync(false);
         }
         catch (UnauthorizedAccessException)
         {
